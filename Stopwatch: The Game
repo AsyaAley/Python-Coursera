@@ -1,0 +1,88 @@
+
+import simplegui
+
+# global variables
+time = 0 
+sec = 0
+stops = 0 #the number of Stop button been pressed
+luck = 0  #the number of "stops" the watch on a whole second
+
+
+# helper function format that converts time
+# in tenths of seconds into formatted string A:BC.D
+def format(sec):
+    global time
+    minutes = sec/600
+    seconds = sec%600
+    
+    #format seconds  
+    str_seconds = str(seconds)
+    if len(str_seconds) == 1:
+            print_sec = ":00." + str_seconds
+    elif len(str_seconds) == 2:
+            print_sec = ":0" + str_seconds[0]+ "." + str_seconds[1]
+    elif len(str_seconds) == 3:
+            print_sec = ":" + str_seconds[0]+ str_seconds[1] + "." + str_seconds[2]
+    #combine a string A:BC.D if time is less whan hour, else prints a message
+    if minutes < 60:
+         time = str(minutes) + print_sec
+    else:
+         time = "Press Restart"
+    return time
+
+# define event handlers for buttons; "Start", "Stop", "Reset"
+def start():
+    timer.start()
+    
+def stop():
+    if timer.is_running(): 
+        global stops
+        stops +=1
+    global sec
+    global luck
+    if  timer.is_running() and sec%10 == 0:
+        luck += 1
+    timer.stop()
+        
+    
+    
+def reset():
+    global sec
+    sec = -1
+    global luck
+    luck = 0
+    global stops
+    stops = 0
+    seconds()
+    timer.stop()
+    
+
+# event handler for timer with 0.1 sec interval
+def seconds():
+    global sec
+    draw_seconds 
+    sec += 1
+    format(sec)
+    
+#draw handlers
+def draw_seconds(canvas):
+    canvas.draw_text( str(time), [130,200], 70, "White") #draws time
+    canvas.draw_text( str(luck) + "/" + str(stops), [340,30], 20, "Green") #draws score
+
+# frame
+frame = simplegui.create_frame("Stopwatch", 400, 400)
+
+
+# event handlers
+timer = simplegui.create_timer(100, seconds)
+#draw_score = frame.set_draw_handler(draw_score)
+draw_seconds = frame.set_draw_handler(draw_seconds)
+start_button = frame.add_button("Start", start, 70)
+stop_button = frame.add_button("Stop", stop, 70)
+restart_button = frame.add_button("Reset", reset, 70)
+
+# start frame
+frame.start()
+timer.start()
+
+
