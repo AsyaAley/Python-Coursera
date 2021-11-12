@@ -1,0 +1,70 @@
+import simplegui
+import random
+
+# helper function to initialize globals
+def new_game():
+    global numbers,opened,cards,click_amount,click
+    numbers = [] #a list of envisioned cards
+    click = False #to do not start drawing cards
+    click_amount = 0 
+    cards = [] #a list of clicked cards
+    opened = [] #a list of already opened cards
+    #iteration that makes the "number" list
+    for n in range(8):
+        numbers.insert(random.randint(0,16), n)
+        numbers.insert(random.randint(0,16), n)      
+    return numbers
+  
+    
+# define event handlers
+def mouseclick(pos): #function for mouse click
+    global click, click_amount, cards
+    click = True #to start drawing clicked cards
+    card_num = pos[0]/50 #to find out the number of clicked card
+    if card_num in cards or card_num in opened: #if card already opened or clicked don't change anything
+        pass
+    else: #if it's a new card
+        click_amount = click_amount+1 #increasing amount of clicks
+        label.set_text("Turns = " + str(click_amount)) #changes the label text
+        if len(cards)<2: #if opened less whan 2 cards add element to list of clicked cards
+            cards.append(card_num)
+        else: #if 2 cards already opened, clear a list of opened cards and add a new element   
+            cards = []
+            cards.append(card_num)
+    # makes a list of correctly opened pairs of cards to continue drawing them
+    if len(cards)==2 and numbers[cards[0]]==numbers[cards[1]]:
+        opened.append(cards[0])
+        opened.append(cards[1])
+   
+
+#drawing   
+def draw(canvas):
+    global numbers, click, cards
+    #drawing card faces
+    for i in range(16):
+        canvas.draw_polygon([[i*50, 0], [i*50, 100],[i*50+50, 100], [i*50+50, 0]], 12, 'Yellow', 'Orange')
+    #drawing numbers
+    if click:
+        for card_num in cards: #drawing clicked cards
+            num_draw_point = [card_num*50+5, 80]
+            canvas.draw_polygon([[card_num*50, 0], [card_num*50, 100],[card_num*50+50, 100], [card_num*50+50, 0]], 3, 'Black','White')
+            canvas.draw_text(str(numbers[card_num]), num_draw_point, 80, 'Black')
+        for open in opened: #drawing opened cards
+            num_draw_point = [open*50+5, 80]
+            canvas.draw_polygon([[open*50, 0], [open*50, 100],[open*50+50, 100], [open*50+50, 0]], 3, 'Black','White')
+            canvas.draw_text(str(numbers[open]), num_draw_point, 80, 'Black')
+
+
+# create frame and add a button and labels
+frame = simplegui.create_frame("Memory", 800, 100)
+frame.add_button("Reset", new_game)
+
+
+# register event handlers
+frame.set_mouseclick_handler(mouseclick)
+frame.set_draw_handler(draw)
+label = frame.add_label('Turns = 0')
+               
+# get things rolling
+new_game()
+frame.start()
