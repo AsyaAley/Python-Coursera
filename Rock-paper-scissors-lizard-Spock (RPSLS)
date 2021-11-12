@@ -1,6 +1,5 @@
-# link https://py2.codeskulptor.org/#user48_T8dNKrq2Hs_2.py
+# Rock-paper-scissors-lizard-Spock AYSYLU ALYUSHEVA
 
-# Rock-paper-scissors-lizard-Spock template
 
 # The key idea of this program is to equate the strings
 # "rock", "paper", "scissors", "lizard", "Spock" to numbers
@@ -11,7 +10,7 @@
 # 2 - paper
 # 3 - lizard
 # 4 - scissors
-
+import simplegui
 # helper functions
 
 def name_to_number(name):
@@ -28,7 +27,8 @@ def name_to_number(name):
     elif name == "scissors":
        return 4
     
-    
+    else:
+        return "ERROR"
 
 
 def number_to_name(number):
@@ -46,7 +46,7 @@ def number_to_name(number):
        return "scissors"
    
     
-    
+# main function   
 
 def rpsls(player_choice): 
     """Game"""
@@ -56,34 +56,38 @@ def rpsls(player_choice):
 
     # convert the player's choice to player_number using the function name_to_number()
     player_number = name_to_number (player_choice)
+    
+#CHEK if the player's choice is right
+    if player_number <> "ERROR":      
 
     # compute random guess for comp_number using random.randrange()
-    import random
-    comp_number = random.randrange(0, 5)
+       import random       
+       comp_number = random.randrange(0, 5)
 
     # convert comp_number to comp_choice using the function number_to_name()
-    comp_choice = number_to_name(comp_number)
+       comp_choice = number_to_name(comp_number)
     
     # print out the message for computer's choice
-    print "Computer chooses " + comp_choice
+       print "Computer chooses " + comp_choice
 
     # compute difference of comp_number and player_number 
-    difference = player_number - comp_number
+       difference = player_number - comp_number
     
     # use if/elif/else to check difference to the rule, determine winner and print winner message
-    if difference == 1 or difference == 2:
-        print "Player wins!"
-    elif difference +5 == 1 or difference + 5 == 2:
-        print "Player wins!"
-    else:
-        print "Computer wins!"
-    
+       if difference == 0:
+          print "The game ended in a draw!"
+       elif difference == 1 or difference == 2:
+          print "Player wins!"
+       elif difference +5 == 1 or difference + 5 == 2:
+          print "Player wins!"
+       else:
+          print "Computer wins!"
+#If player enters the wrong name print ERROR message
+    else: 
+        print "ERROR: Wrong player's choice!" 
     # print a blank line to separate consecutive games
     print "                                                     "
+ #Create frame and assign callbacks to event handlers
     
-# test 
-rpsls("rock")
-rpsls("Spock")
-rpsls("paper")
-rpsls("lizard")
-rpsls("scissors")
+frame = simplegui.create_frame("Rock-paper-scissors-lizard-Spock", 200, 200)
+frame.add_input("Choose from rock,paper,scissors,lizard,Spock", rpsls, 200)
